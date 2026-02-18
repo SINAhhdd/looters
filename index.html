@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شاه دزد - فاتح قلعه‌ها | منوی اصلی (نسخه فیک)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      background: linear-gradient(180deg, #87CEEB 0%, #98D8E8 50%, #E0F6FF 100%);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      color: #333;
+    }
+    /* ابرها برای جو */
+    .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: float 20s infinite linear; }
+    .cloud:nth-child(1) { top: 10%; left: 10%; width: 150px; height: 60px; animation-delay: 0s; }
+    .cloud:nth-child(2) { top: 20%; right: 15%; width: 200px; height: 80px; animation-delay: 5s; }
+    @keyframes float { 0% { transform: translateX(-100vw); } 100% { transform: translateX(100vw); } }
+
+    /* قلعه اصلی */
+    .castle {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw; max-width: 500px;
+      height: 60vh;
+      background: linear-gradient(180deg, #8B4513 0%, #A0522D 20%, #654321 100%);
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 10px;
+    }
+    .floor {
+      display: flex;
+      gap: 15px;
+      height: 80px;
+      position: relative;
+    }
+    .room {
+      flex: 1;
+      background: rgba(255,255,255,0.3);
+      border: 3px solid #D2B48C;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .room::before { content: ''; position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; background: #00FF00; border-radius: 50%; box-shadow: 0 0 10px lime; } /* پنجره سبز */
+    .room::after { content: ''; position: absolute; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #FFD700; border-radius: 5px; } /* مبل/تخت */
+    
+    /* تله‌ها */
+    .trap-fire { position: absolute; top: 20px; left: 20px; width: 30px; height: 30px; background: url('https://img.icons8.com/emoji/48/fire.png') no-repeat center/contain; }
+    .trap-spike { position: absolute; bottom: 10px; right: 10px; width: 25px; height: 25px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background: #FF4500; }
+    .gem-chest { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: url('https://img.icons8.com/emoji/64/gem-stone.png') no-repeat center/contain; animation: glow 2s infinite; }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 10px lime; } 50% { box-shadow: 0 0 20px #00FF00; } }
+
+    /* شاه پایین */
+    .king {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 150px;
+      background: url('https://img.icons8.com/emoji/96/king.png') no-repeat center/contain;
+      filter: hue-rotate(20deg) drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+    }
+
+    /* UI بالا */
+    .top-ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      background: rgba(255,215,0,0.9);
+      padding: 10px 20px;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .top-ui i { font-size: 24px; color: #FF6B35; }
+    .top-ui span { font-weight: bold; font-size: 18px; }
+
+    /* دکمه اصلی */
+    .main-btn {
+      position: absolute;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #8B0000;
+      border: none;
+      padding: 20px 40px;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 30px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
+    .main-btn:hover { background: linear-gradient(45deg, #FFA500, #FF8C00); }
+
+    /* چت گلوبال فیک */
+    .global-chat {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 280px;
+      height: 300px;
+      background: rgba(0,0,0,0.8);
+      border: 3px solid #FFD700;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      color: white;
+      font-size: 14px;
+    }
+    .chat-header { background: #FFD700; color: black; padding: 10px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; }
+    .chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 2px solid #FFD700;
+      gap: 5px;
+    }
+    .chat-input input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 10px; }
+    .chat-input button { background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
+    .message { margin-bottom: 8px; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+    /* موبایل responsive */
+    @media (max-width: 600px) { .castle { width: 95vw; } .global-chat { right: 5px; width: 90vw; max-width: 350px; } }
+  </style>
+</head>
+<body>
+  <!-- ابرها -->
+  <div class="cloud"></div>
+  <div class="cloud"></div>
+
+  <!-- UI بالا -->
+  <div class="top-ui">
+    <i class="fas fa-cog" title="تنظیمات"></i>
+    <span>PvP: ۱۲۳</span>
+    <i class="fas fa-gem" style="color: lime;"></i>
+    <span>۵۰۰</span>
+    <i class="fas fa-coins" style="color: gold;"></i>
+    <span>۱۰۲۴</span>
+  </div>
+
+  <!-- قلعه -->
+  <div class="castle">
+    <!-- طبقه بالا -->
+    <div class="floor">
+      <div class="room"><div class="trap-fire"></div></div>
+      <div class="room"><div class="trap-spike"></div></div>
+      <div class="room"></div>
+    </div>
+    <!-- طبقه وسط -->
+    <div class="floor">
+      <div class="room"></div>
+      <div class="room"><div class="trap-fire"></div></div>
+      <div class="room"></div>
+    </div>
+    <!-- طبقه پایین -->
+    <div class="floor">
+      <div class="room"><div class="trap-spike"></div></div>
+      <div class="room"></div>
+      <div class="room">
+        <div class="gem-chest" title="گنج"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- شاه -->
+  <div class="king"></div>
+
+  <!-- دکمه اصلی -->
+  <button class="main-btn" onclick="alert('بازی شروع شد! (فیک)')">فاتح قلعه‌ها</button>
+
+  <!-- چت گلوبال -->
+  <div class="global-chat">
+    <div class="chat-header">چت گلوبال <i class="fas fa-comments" style="margin-right: 5px;"></i></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." onkeypress="if(event.key==='Enter') sendMessage()">
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // پیام‌های فیک
+    const fakeMessages = [
+      "علی: کی میخواد حمله کنه؟ 😈",
+      "رضا: تله جدید خریدم! 🔥",
+      "مریم: لول آپ شدم lvl ۲۰ 🎉",
+      "حسن: گنج بردم از قلعه boss!",
+      "سارا: PvP امشب کی هست؟ ⚔️",
+      "مهدی: سرور لگ داره 😩",
+      "فاطمه: بهترین دفاع رو ساختم 💪",
+      "امیر: ۱۰۰۰ جم جایزه دادم!"
+    ];
+
+    let chatInterval;
+
+    function startFakeChat() {
+      chatInterval = setInterval(() => {
+        const msg = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
+        addMessage(msg);
+      }, 4000);
+    }
+
+    function addMessage(text) {
+      const messages = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      if (input.value.trim()) {
+        addMessage(`تو: ${input.value}`);
+        input.value = '';
+      }
+    }
+
+    // شروع چت فیک
+    startFakeChat();
+  </script>
+</body>
+</html>
