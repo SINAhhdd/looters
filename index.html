@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>شاه دزد - نسخه خیلی ساده</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom, #1e3c72, #2a5298);
+      font-family: Tahoma, sans-serif;
+      color: white;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 {
+      margin: 10px;
+      text-shadow: 2px 2px 4px black;
+    }
+    #game {
+      position: relative;
+      width: 90vw;
+      max-width: 700px;
+      height: 300px;
+      background: #0f2027;
+      border: 5px solid #ffd700;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px gold;
+    }
+    #path {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: repeating-linear-gradient(90deg, #8b4513, #8b4513 40px, #a0522d 40px, #a0522d 80px);
+    }
+    .thief {
+      position: absolute;
+      bottom: 80px;
+      left: 30px;
+      width: 50px;
+      height: 70px;
+      background: url('https://img.icons8.com/emoji/96/000000/thief-emoji.png') no-repeat center/contain;
+      transition: left 0.3s, bottom 0.4s;
+    }
+    .trap {
+      position: absolute;
+      bottom: 60px;
+      width: 50px;
+      height: 50px;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .gem {
+      position: absolute;
+      right: 40px;
+      bottom: 90px;
+      width: 60px;
+      height: 60px;
+      background: url('https://img.icons8.com/emoji/96/000000/gem-stone-emoji.png') no-repeat center/contain;
+    }
+    #message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: gold;
+      text-shadow: 3px 3px 6px black;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 1.3rem;
+      background: #ffd700;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+    button:hover { background: #ffec8b; }
+  </style>
+</head>
+<body>
+  <h1>شاه دزد - فقط یه بار دیگه!</h1>
+  <div id="game">
+    <div id="path"></div>
+    <div id="thief" class="thief"></div>
+    <div id="gem" class="gem"></div>
+    <div id="message">موفقیت!</div>
+  </div>
+  
+  <button onclick="startGame()">شروع / دوباره</button>
+
+  <script>
+    const game = document.getElementById('game');
+    const thief = document.getElementById('thief');
+    const message = document.getElementById('message');
+    
+    let isJumping = false;
+    let gameActive = false;
+    
+    // تله‌ها رو اینجا تعریف می‌کنیم (می‌تونی بیشتر اضافه کنی)
+    const traps = [
+      {type: 'spike', left: '180px'},
+      {type: 'fire',   left: '320px'},
+      {type: 'glue',   left: '480px'},
+      {type: 'spike',  left: '620px'}
+    ];
+    
+    function createTraps() {
+      // پاک کردن تله‌های قبلی
+      document.querySelectorAll('.trap').forEach(el => el.remove());
+      
+      traps.forEach(t => {
+        const trap = document.createElement('div');
+        trap.classList.add('trap');
+        trap.style.left = t.left;
+        
+        if (t.type === 'spike') {
+          trap.style.backgroundImage = "url('https://img.icons8.com/emoji/96/000000/spike-emoji.png')";
+        } else if (t.type === 'fire') {
+          trap.style.backgroundImage = "url('https://img.icons8.com/emoji/96/000000/fire-emoji.png')";
+        } else if (t.type === 'glue') {
+          trap.style.backgroundImage = "url('https://img.icons8.com/emoji/96/000000/honey.png')";
+        }
+        
+        game.appendChild(trap);
+      });
+    }
+    
+    function jump() {
+      if (!isJumping && gameActive) {
+        isJumping = true;
+        thief.style.bottom = '180px';
+        setTimeout(() => {
+          thief.style.bottom = '80px';
+          isJumping = false;
+        }, 500);
+      }
+    }
+    
+    function checkCollision() {
+      if (!gameActive) return;
+      
+      const thiefRect = thief.getBoundingClientRect();
+      const traps = document.querySelectorAll('.trap');
+      
+      for (let trap of traps) {
+        const trapRect = trap.getBoundingClientRect();
+        if (
+          thiefRect.left < trapRect.right &&
+          thiefRect.right > trapRect.left &&
+          thiefRect.top < trapRect.bottom &&
+          thiefRect.bottom > trapRect.top
+        ) {
+          endGame("خوردي به تله! دوباره؟");
+          return;
+        }
+      }
+      
+      // چک کردن رسیدن به گنج
+      const gemRect = document.getElementById('gem').getBoundingClientRect();
+      if (thiefRect.right >= gemRect.left) {
+        endGame("موفقیت! گنج رو بردی 🎉");
+      }
+    }
+    
+    function endGame(text) {
+      gameActive = false;
+      message.textContent = text;
+      message.style.opacity = '1';
+      setTimeout(() => { message.style.opacity = '0'; }, 2500);
+    }
+    
+    function startGame() {
+      createTraps();
+      thief.style.left = '30px';
+      thief.style.bottom = '80px';
+      message.style.opacity = '0';
+      gameActive = true;
+      
+      // حرکت خودکار دزد به جلو (خیلی ساده)
+      let pos = 30;
+      const interval = setInterval(() => {
+        if (!gameActive) {
+          clearInterval(interval);
+          return;
+        }
+        pos += 2;
+        thief.style.left = pos + 'px';
+        checkCollision();
+        if (pos > 700) clearInterval(interval);
+      }, 30);
+    }
+    
+    // پرش با کلیک یا تاچ
+    game.addEventListener('click', jump);
+    game.addEventListener('touchstart', e => { e.preventDefault(); jump(); });
+    
+    // شروع اولیه
+    startGame();
+  </script>
+</body>
+</html>
